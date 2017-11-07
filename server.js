@@ -8,8 +8,17 @@
  var fs = require('fs');
  var express = require('express');
  var app = express();
- var BitlyAPI = require("node-bitlyapi");
+ var mongoose = require('mongoose');
  var config = require('./config.js');
+ var urlController = require('./api/url.controller.js');
+
+ mongoose.connect(config.mongo.uri, config.mongo.options);
+ mongoose.connection.on('error', function(err) {
+     console.error('MongoDB connection error: ' + err);
+     process.exit(-1);
+ });
+
+ var utils = require('./utils.js');
  if (!process.env.DISABLE_XORIGIN) {
      app.use(function(req, res, next) {
          var allowedOrigins = ['https://narrow-plane.gomix.me', 'https://www.freecodecamp.com'];
@@ -22,11 +31,6 @@
          next();
      });
  }
-
- var Bitly = new BitlyAPI({
-     client_id: "ba55149609e2d04acdb531e861592a064cfa28bd",
-     client_secret: "b2b10a2e1a0279457c304b71767f03e5548baa32"
- });
 
  app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -43,12 +47,19 @@
      .get(function(req, res) {
          res.sendFile(process.cwd() + '/views/index.html');
      })
- app.route('/shorten/:url').get(function(req, res) {
-     console.log('res' + res);
-     Bitly.setAccessToken(config.bitlySecret);
-     Bitly.shorten({ longUrl: "https://github.com/nkirby/node-bitlyapi" }, function(err, results) {
-         res.send("shortened url " + results);
-     });
+ app.route('/shorten/*').get(function(req, res) {
+     //  utils.shorten_url(req.params[0], function(shortURL) {
+     //      if (shortURL) {
+     //          var result = new Object();
+     //          result.original_url = req.params[0];
+     //          result.short_url = shortURL;
+     //          res.send(result);
+     //      } else {
+     //          res.send({ error: "Invalid URL" });
+     //      }
+     //  });
+
+     urlController.handleURL(req, res);
  });
  // Respond not found to all the wrong routes
  app.use(function(req, res, next) {

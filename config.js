@@ -1,3 +1,10 @@
 module.exports = {
-    bitlyToker: '3a258509cf0a2b04672c8a6ea2e94377743cb57c'
+    mongo: {
+        uri: 'mongodb://root:root@ds249355.mlab.com:49355/url-shortener'
+    },
+    options: {
+        db: {
+            safe: true
+        }
+    }
 }
