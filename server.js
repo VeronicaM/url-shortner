@@ -61,6 +61,9 @@
 
      urlController.handleURL(req, res);
  });
+app.route('/*').get(function(req, res){
+  urlController.redirect(req,res);
+});
  // Respond not found to all the wrong routes
  app.use(function(req, res, next) {
      res.status(404);
