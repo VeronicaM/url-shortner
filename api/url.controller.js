@@ -42,7 +42,7 @@ function getURL(req, res) {
                 return res.status(200).send(newTag);
             } else {
                 var newTag = new Object();
-                newTag.original_url = req.params[0];
+                newTag.original_url = req.params[0] + appendQuery(req.query);
                 url.count({}, function(error, count) {
                     if (error) return res.send({ error: "Something went wrong" });
                     return saveURL(req, res, count, newTag)
@@ -56,4 +56,12 @@ function saveURL(req, res, count, newTag) {
     url.create(newTag, function(err, createdTag) {
         return res.status(200).send(newTag);
     });
+}
+
+function appendQuery(query) {
+    var result = "?";
+    for (var prop in query) {
+        result += prop + "=" + query[prop] + "&";
+    }
+    return result.substring(0, result.length - 1);
 }
