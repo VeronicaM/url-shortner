@@ -48,22 +48,11 @@
          res.sendFile(process.cwd() + '/views/index.html');
      })
  app.route('/shorten/*').get(function(req, res) {
-     //  utils.shorten_url(req.params[0], function(shortURL) {
-     //      if (shortURL) {
-     //          var result = new Object();
-     //          result.original_url = req.params[0];
-     //          result.short_url = shortURL;
-     //          res.send(result);
-     //      } else {
-     //          res.send({ error: "Invalid URL" });
-     //      }
-     //  });
-
-     urlController.handleURL(req, res);
+     return urlController.handleURL(req, res);
  });
-app.route('/*').get(function(req, res){
-  urlController.redirect(req,res);
-});
+ app.route('/*').get(function(req, res) {
+     urlController.redirect(req, res);
+ });
  // Respond not found to all the wrong routes
  app.use(function(req, res, next) {
      res.status(404);
