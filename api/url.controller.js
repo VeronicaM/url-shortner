@@ -13,6 +13,8 @@ exports.redirect = function(req, res) {
         }
         if (foundURL) {
             return res.redirect(foundURL.original_url);
+        } else {
+            return res.status(404).send({ error: "Unkown URL" });
         }
     });
 }
